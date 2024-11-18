@@ -1,0 +1,23 @@
+from tkinter import *
+import calendar
+def showcalendar():
+    window=Tk()
+    window.config(background='white')
+    window.title('CALENDAR')
+    window.geometry('550x600')
+    fetchyear=int(entry1.get())
+    calendardetails=calendar.calendar(fetchyear)
+    text1=Text(window,font='Consolas 10',height=60,width=80)
+    text1.insert('1.0',calendardetails)
+    text1.grid(row=5,column=1,padx=20,pady=20)
+    window.mainloop()
+root=Tk()
+root.geometry()
+root.title('CALENDAR')
+label1=Label(root,text='CALENDAR',font=('times new roman',40,'bold'),background='grey').pack(pady=10)
+label2=Label(root,text='Enter Year',background='light green').pack(pady=10)
+entry1=Entry(root,width=30)
+entry1.pack(pady=10)
+button1=Button(root,text='Show Calendar',bd=10,background='red',command=showcalendar).pack(pady=10)
+button2=Button(root,text='Exit',bd=10,background='red',command=exit).pack(pady=10)
+root.mainloop()
