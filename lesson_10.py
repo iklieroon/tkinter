@@ -1,7 +1,62 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter.filedialog import *
+from tkinter import messagebox
 root=Tk()
+addressbook={}
+
+def clear():
+    nameentry.delete(0,END)
+    addressentry.delete(0,END)
+    mobileentry.delete(0,END)
+    emailentry.delete(0,END)
+    birthdayentry.delete(0,END)
+
+def add():
+    key=nameentry.get()
+    if key=='':
+        messagebox.showinfo(title='ERROR',message='ERROR, there must be a name.')
+    else:
+        if key not in addressbook.keys():
+            addresslistbox.insert(END,key)
+        addressbook[key]=addressentry.get(),mobileentry.get(),emailentry.get(),birthdayentry.get()
+        clear()
+    print(addressbook)
+
+def edit():
+    clear()
+    nameselection=addresslistbox.curselection()
+    if nameselection:
+        nameentry.insert(0,addresslistbox.get(nameselection))
+        details=addressbook[nameentry.get()]
+        addressentry.insert(0,details[0])
+        mobileentry.insert(0,details[1])
+        emailentry.insert(0,details[2])
+        birthdayentry.insert(0,details[3])
+    else:
+        messagebox.showinfo(title='ERROR',message='ERROR, you need to select a name from the list')
+
+def delete():
+    global addressbook
+    selection=addresslistbox.curselection()
+    if selection:
+        del addressbook[addresslistbox.get(selection)]
+        addresslistbox.delete(selection)
+        clear()
+    else:
+        addresslistbox.delete(0,END)
+        del addressbook
+        clear()
+
+
+
+
+
+
+
+
+
+
 titlelabel=Label(root,text='My Address Book')
 titlelabel.grid(row=0,column=0,columnspan=3)
 openbutton=Button(root,text='Open')
@@ -28,12 +83,12 @@ birthdaylabel=Label(root,text='Birthday:')
 birthdaylabel.grid(row=6,column=3)
 birthdayentry=Entry(root,width=25)
 birthdayentry.grid(row=6,column=4)
-editbutton=Button(root,text='Edit')
+editbutton=Button(root,text='Edit',command=edit)
 editbutton.grid(row=7,column=0,pady=10)
-deletebutton=Button(root,text='Delete')
+deletebutton=Button(root,text='Delete',command=delete)
 deletebutton.grid(row=7,column=1)
-addbutton=Button(root,text='Add')
+addbutton=Button(root,text='Add',command=add)
 addbutton.grid(row=7,column=3)
-savebutton=Button(root,text='Save')
+savebutton=Button(root,text='Save',width=20)
 savebutton.grid(row=7,column=4)
 mainloop()
