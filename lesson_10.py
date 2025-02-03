@@ -4,14 +4,12 @@ from tkinter.filedialog import *
 from tkinter import messagebox
 root=Tk()
 addressbook={}
-
 def clear():
     nameentry.delete(0,END)
     addressentry.delete(0,END)
     mobileentry.delete(0,END)
     emailentry.delete(0,END)
     birthdayentry.delete(0,END)
-
 def add():
     key=nameentry.get()
     if key=='':
@@ -22,7 +20,6 @@ def add():
         addressbook[key]=addressentry.get(),mobileentry.get(),emailentry.get(),birthdayentry.get()
         clear()
     print(addressbook)
-
 def edit():
     clear()
     nameselection=addresslistbox.curselection()
@@ -35,7 +32,6 @@ def edit():
         birthdayentry.insert(0,details[3])
     else:
         messagebox.showinfo(title='ERROR',message='ERROR, you need to select a name from the list')
-
 def delete():
     global addressbook
     selection=addresslistbox.curselection()
@@ -47,8 +43,31 @@ def delete():
         addresslistbox.delete(0,END)
         del addressbook
         clear()
-
-
+def save():
+    savevariable=asksaveasfile(defaultextension='.txt')
+    if savevariable is not None:
+        for i in addresslistbox.get(0,END):
+            print(i,file=savevariable)
+def open():
+    openfile=askopenfile(title='openfile')
+    if openfile is not None:
+        items=openfile.readlines()
+        for i in items:
+            addresslistbox.insert(END,str(i))
+def display(event):
+    newwindow=Toplevel(root)
+    selection=addresslistbox.curselection()
+    details=''
+    if selection:
+        key=addresslistbox.get(selection)
+        details='Name:'+key+'\n'
+        keyvalues=addressbook[key]
+        details+='Address: '+keyvalues[0]+'\n'
+        details+='Mobile: '+keyvalues[1]+'\n'
+        details+='Email: '+keyvalues[2]+'\n'
+        details+='Birthday: '+keyvalues[3]+'\n'
+    detaillabel=Label(newwindow,text=details)
+    detaillabel.pack()
 
 
 
@@ -59,10 +78,11 @@ def delete():
 
 titlelabel=Label(root,text='My Address Book')
 titlelabel.grid(row=0,column=0,columnspan=3)
-openbutton=Button(root,text='Open')
+openbutton=Button(root,text='Open',command=open)
 openbutton.grid(row=0,column=4)
 addresslistbox=Listbox(root,width=30,height=13)
 addresslistbox.grid(row=2,column=0,columnspan=3,rowspan=5,padx=10,pady=10)
+addresslistbox.bind('<<ListboxSelect>>',display)
 namelabel=Label(root,text='Name:')
 namelabel.grid(row=2,column=3)
 nameentry=Entry(root,width=25)
@@ -89,6 +109,6 @@ deletebutton=Button(root,text='Delete',command=delete)
 deletebutton.grid(row=7,column=1)
 addbutton=Button(root,text='Add',command=add)
 addbutton.grid(row=7,column=3)
-savebutton=Button(root,text='Save',width=20)
+savebutton=Button(root,text='Save',width=20,command=save)
 savebutton.grid(row=7,column=4)
 mainloop()
